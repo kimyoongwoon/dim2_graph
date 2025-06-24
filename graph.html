@@ -5,11 +5,25 @@
   <title>Graph View</title>
 </head>
 <body>
-  <h1>생성된 데이터</h1>
-  <!-- JSON을 그대로 볼 수도 있고, 이곳에 차트 캔버스를 추가해도 됩니다 -->
-  <pre id="graphOutput"></pre>
+  <h1>데이터 분석 및 차원 선택</h1>
+  
+  <div id="dataAnalysis">
+    <h2>데이터 분석 결과</h2>
+    <div id="analysisInfo"></div>
+  </div>
+  
+  <div id="dimensionSelector" style="display: none;">
+    <h2>표시할 차원 선택</h2>
+    <p>가능한 차원을 선택하세요:</p>
+    <div id="dimensionButtons"></div>
+  </div>
+  
+  <div id="exportResults" style="display: none;">
+    <h2>선택된 차원 데이터</h2>
+    <div id="selectedDimensionInfo"></div>
+    <button id="exportBtn">데이터 내보내기</button>
+  </div>
 
   <script type="module" src="graph.js"></script>
-
 </body>
 </html>
