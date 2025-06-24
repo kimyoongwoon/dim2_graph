@@ -30,13 +30,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             <input class="ax-name" value="x${i}" style="padding: 4px;">
             
             <label>최소:</label>
-            <input type="number" class="ax-min" value="0" style="padding: 4px;">
+            <input type="double" class="ax-min" value="0" style="padding: 4px;">
             
             <label>최대:</label>
-            <input type="number" class="ax-max" value="10" style="padding: 4px;">
+            <input type="double" class="ax-max" value="10" style="padding: 4px;">
             
             <label>간격:</label>
-            <input type="number" class="ax-int" value="1" step="0.1" style="padding: 4px;">
+            <input type="double" class="ax-int" value="1" step="0.1" style="padding: 4px;">
             
             <label>중복허용:</label>
             <input type="checkbox" class="ax-dup" checked style="transform: scale(1.2);">

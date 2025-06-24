@@ -8,19 +8,19 @@
 <body>
   <h1>Random Data Generator</h1>
 
-  <label>축 개수: <input type="number" id="dimCount" min="1" value="2"></label>
+  <label>축 개수: <input type="double" id="dimCount" min="1" value="2"></label>
   <div id="axisContainer"></div>
 
   <label>Value 타입:
     <select id="valueType">
-        <option value="number">숫자</option>
-        <option value="string_int">문자열+숫자</option>
+        <option value="double">숫자</option>
+        <option value="string_double">문자열+숫자</option>
         <option value="array">배열</option>
         <option value="string_array">문자열+배열</option> 
     </select>
   </label>
 
-  <label>데이터 갯수: <input id="numPoints" type="number" value="100"></label>
+  <label>데이터 갯수: <input id="numPoints" type="double" value="100"></label>
 
   <button id="generateBtn" disabled>생성하기</button>
   <button id="viewGraphBtn" disabled>그래프 보기</button>

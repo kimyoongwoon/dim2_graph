@@ -52,18 +52,18 @@ def random_coordinate(axis: AxisSpec) -> float:
 def random_value(value_type: str, arr_num: int = 3) -> Any:
     """
     value_type에 따라 랜덤 값 생성:
-      - "number": 0.0~1.0 사이 실수
-      - "string_int": 문자열+정수
+      - "double": 0.0~1.0 사이 실수
+      - "string_double": 문자열+정수
       - "array": 숫자 배열
       - "string_array": 문자열+숫자 배열
     """
     try:
-        if value_type == "number":
+        if value_type == "double":
             return round(random.random(), 6)
-        elif value_type == "string_int":
+        elif value_type == "string_double":
             animals = ["사자", "호랑이", "코끼리", "기린", "얼룩말", "하마"]
             s = random.choice(animals)
-            return f"{s}{random.randint(0, 100)}"
+            return [s, [round(random.random(), 3)]]
         elif value_type == "array":
             return [round(random.random(), 3) for _ in range(arr_num)]
         elif value_type == "string_array":

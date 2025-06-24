@@ -53,7 +53,7 @@ async def generate(req: GenerateRequest):
         if req.num_points <= 0:
             raise HTTPException(status_code=400, detail="포인트 수는 양수여야 합니다")
         
-        if req.value_type not in ["number", "string_int", "array", "string_array"]:
+        if req.value_type not in ["double", "string_double", "array", "string_array"]:
             raise HTTPException(status_code=400, detail="지원하지 않는 값 타입입니다")
         
         # AxisSpec 객체로 변환
