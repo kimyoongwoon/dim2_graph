@@ -303,6 +303,39 @@ function createSizeChart(data, dataset) {
   const xAxis = dataset.axes[0].name;
   const sizeAxis = dataset.axes[1].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} (크기: ${sizeAxis})`,
+          data: [],
+          backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          pointRadius: 5 // default size
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { display: false, min: -0.5, max: 0.5 }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [`${xAxis}: ${ctx.parsed.x}`, `${sizeAxis}: ${ctx.raw.size}`],
+              afterLabel: (ctx) => '\n' + ctx.raw.fullData
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const sizeValues = data.map(d => d[sizeAxis]);
   const minSize = Math.min(...sizeValues);
   const maxSize = Math.max(...sizeValues);
@@ -321,6 +354,10 @@ function createSizeChart(data, dataset) {
         backgroundColor: 'rgba(255, 99, 132, 0.6)',
         borderColor: 'rgba(255, 99, 132, 1)',
         pointRadius: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.size === undefined || !isFinite(minSize) || !isFinite(maxSize)) {
+            return 5; // fallback size
+          }
           const size = ctx.raw.size;
           return 3 + (size - minSize) / (maxSize - minSize) * 15;
         }
@@ -358,6 +395,38 @@ function createColorChart(data, dataset) {
   const xAxis = dataset.axes[0].name;
   const colorAxis = dataset.axes[1].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} (색상: ${colorAxis})`,
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(0, 0, 0, 0.2)',
+          pointRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { display: false, min: -0.5, max: 0.5 }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [`${xAxis}: ${ctx.parsed.x}`, `${colorAxis}: ${ctx.raw.color}`]
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const colorValues = data.map(d => d[colorAxis]);
   const minColor = Math.min(...colorValues);
   const maxColor = Math.max(...colorValues);
@@ -375,7 +444,7 @@ function createColorChart(data, dataset) {
         backgroundColor: (ctx) => {
           const value = ctx.raw.color;
           const normalized = (value - minColor) / (maxColor - minColor);
-          const hue = normalized * 240; // 파랑(240)에서 빨강(0)으로
+          const hue = normalized * 240;
           return `hsl(${240 - hue}, 70%, 50%)`;
         },
         borderColor: 'rgba(0, 0, 0, 0.2)',
@@ -620,6 +689,42 @@ function createSizeColorChart(data, dataset) {
   const sizeAxis = dataset.axes[1].name;
   const colorAxis = dataset.axes[2].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} (크기: ${sizeAxis}, 색상: ${colorAxis})`,
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(0, 0, 0, 0.2)',
+          pointRadius: 5 // default size
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { display: false, min: -0.5, max: 0.5 }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [
+                `${xAxis}: ${ctx.parsed.x}`,
+                `${sizeAxis}: ${ctx.raw.size}`,
+                `${colorAxis}: ${ctx.raw.color}`
+              ]
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const sizeValues = data.map(d => d[sizeAxis]);
   const minSize = Math.min(...sizeValues);
   const maxSize = Math.max(...sizeValues);
@@ -640,6 +745,10 @@ function createSizeColorChart(data, dataset) {
           color: d[colorAxis]
         })),
         backgroundColor: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.color === undefined || !isFinite(minColor) || !isFinite(maxColor)) {
+            return 'rgba(54, 162, 235, 0.6)'; // fallback color
+          }
           const value = ctx.raw.color;
           const normalized = (value - minColor) / (maxColor - minColor);
           const hue = normalized * 240;
@@ -647,6 +756,10 @@ function createSizeColorChart(data, dataset) {
         },
         borderColor: 'rgba(0, 0, 0, 0.2)',
         pointRadius: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.size === undefined || !isFinite(minSize) || !isFinite(maxSize)) {
+            return 5; // fallback size
+          }
           const size = ctx.raw.size;
           return 3 + (size - minSize) / (maxSize - minSize) * 15;
         }
@@ -685,6 +798,42 @@ function createScatterSizeChart(data, dataset) {
   const yAxis = dataset.axes[1].name;
   const sizeAxis = dataset.axes[2].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} vs ${yAxis} (크기: ${sizeAxis})`,
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          pointRadius: 5 // default size
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { title: { display: true, text: yAxis } }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [
+                `${xAxis}: ${ctx.parsed.x}`,
+                `${yAxis}: ${ctx.parsed.y}`,
+                `${sizeAxis}: ${ctx.raw.size}`
+              ]
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const sizeValues = data.map(d => d[sizeAxis]);
   const minSize = Math.min(...sizeValues);
   const maxSize = Math.max(...sizeValues);
@@ -702,6 +851,10 @@ function createScatterSizeChart(data, dataset) {
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
         borderColor: 'rgba(54, 162, 235, 1)',
         pointRadius: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.size === undefined || !isFinite(minSize) || !isFinite(maxSize)) {
+            return 5; // fallback size
+          }
           const size = ctx.raw.size;
           return 3 + (size - minSize) / (maxSize - minSize) * 15;
         }
@@ -738,6 +891,42 @@ function createScatterColorChart(data, dataset) {
   const yAxis = dataset.axes[1].name;
   const colorAxis = dataset.axes[2].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} vs ${yAxis} (색상: ${colorAxis})`,
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(0, 0, 0, 0.2)',
+          pointRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { title: { display: true, text: yAxis } }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [
+                `${xAxis}: ${ctx.parsed.x}`,
+                `${yAxis}: ${ctx.parsed.y}`,
+                `${colorAxis}: ${ctx.raw.color}`
+              ]
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const colorValues = data.map(d => d[colorAxis]);
   const minColor = Math.min(...colorValues);
   const maxColor = Math.max(...colorValues);
@@ -753,6 +942,10 @@ function createScatterColorChart(data, dataset) {
           color: d[colorAxis]
         })),
         backgroundColor: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.color === undefined || !isFinite(minColor) || !isFinite(maxColor)) {
+            return 'rgba(54, 162, 235, 0.6)'; // fallback color
+          }
           const value = ctx.raw.color;
           const normalized = (value - minColor) / (maxColor - minColor);
           const hue = normalized * 240;
@@ -935,6 +1128,44 @@ function createScatterSizeColorChart(data, dataset) {
   const sizeAxis = dataset.axes[2].name;
   const colorAxis = dataset.axes[3].name;
   
+  // Check for empty data FIRST, before any processing
+  if (!data || data.length === 0) {
+    return {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: `${xAxis} vs ${yAxis} (크기: ${sizeAxis}, 색상: ${colorAxis})`,
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(0, 0, 0, 0.2)',
+          pointRadius: 5 // default size
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: xAxis } },
+          y: { title: { display: true, text: yAxis } }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => [
+                `${xAxis}: ${ctx.parsed.x}`,
+                `${yAxis}: ${ctx.parsed.y}`,
+                `${sizeAxis}: ${ctx.raw.size}`,
+                `${colorAxis}: ${ctx.raw.color}`
+              ],
+              afterLabel: (ctx) => '\n' + ctx.raw.fullData
+            }
+          }
+        }
+      }
+    };
+  }
+  
+  // Only process data if we have data
   const sizeValues = data.map(d => d[sizeAxis]);
   const minSize = Math.min(...sizeValues);
   const maxSize = Math.max(...sizeValues);
@@ -956,6 +1187,10 @@ function createScatterSizeColorChart(data, dataset) {
           fullData: d._fullData
         })),
         backgroundColor: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.color === undefined || !isFinite(minColor) || !isFinite(maxColor)) {
+            return 'rgba(54, 162, 235, 0.6)'; // fallback color
+          }
           const value = ctx.raw.color;
           const normalized = (value - minColor) / (maxColor - minColor);
           const hue = normalized * 240;
@@ -963,6 +1198,10 @@ function createScatterSizeColorChart(data, dataset) {
         },
         borderColor: 'rgba(0, 0, 0, 0.2)',
         pointRadius: (ctx) => {
+          // Safety check for empty data
+          if (!ctx.raw || ctx.raw.size === undefined || !isFinite(minSize) || !isFinite(maxSize)) {
+            return 5; // fallback size
+          }
           const size = ctx.raw.size;
           return 3 + (size - minSize) / (maxSize - minSize) * 15;
         }

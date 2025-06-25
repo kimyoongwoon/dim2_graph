@@ -189,6 +189,13 @@ function createFilterControl(axis, datasetIndex) {
   
   control.appendChild(buttons);
   
+  // 슬라이더와 텍스트 입력 컨테이너
+  const sliderContainer = document.createElement('div');
+  sliderContainer.style.display = 'flex';
+  sliderContainer.style.alignItems = 'center';
+  sliderContainer.style.gap = '8px';
+  sliderContainer.style.marginTop = '5px';
+  
   // 슬라이더
   const slider = document.createElement('input');
   slider.type = 'range';
@@ -197,38 +204,106 @@ function createFilterControl(axis, datasetIndex) {
   slider.max = '100';
   slider.value = '50';
   slider.step = '0.01';
+  slider.style.flex = '1'; // 슬라이더가 남은 공간을 차지하도록
+  
+  // 텍스트 입력 필드
+  const textInput = document.createElement('input');
+  textInput.type = 'number';
+  textInput.className = 'filter-text-input';
+  textInput.style.width = '80px';
+  textInput.style.padding = '2px 4px';
+  textInput.style.border = '1px solid #ccc';
+  textInput.style.borderRadius = '3px';
+  textInput.style.fontSize = '11px';
+  textInput.step = 'any';
   
   const valueDisplay = document.createElement('div');
   valueDisplay.className = 'filter-value';
   valueDisplay.textContent = '계산 중...';
+  valueDisplay.style.minWidth = '60px';
+  valueDisplay.style.textAlign = 'center';
   
   // 데이터에서 최소/최대값 계산
   setTimeout(() => {
     const { min, max } = getAxisRange(axis);
+    const initialValue = (min + max) / 2;
+    
+    // 슬라이더 설정
     slider.min = min;
     slider.max = max;
-    slider.value = (min + max) / 2;
+    slider.value = initialValue;
     slider.step = (max - min) / 1000;
-    valueDisplay.textContent = slider.value;
+    
+    // 텍스트 입력 설정
+    textInput.min = min;
+    textInput.max = max;
+    textInput.value = initialValue.toFixed(3);
+    textInput.step = (max - min) / 1000;
+    
+    valueDisplay.textContent = initialValue.toFixed(3);
     
     // 필터 초기화
     filters[datasetIndex][axis.name] = {
       mode: '모두',
-      value: parseFloat(slider.value),
+      value: initialValue,
       min: min,
       max: max
     };
   }, 0);
   
+  // 슬라이더 변경 이벤트
   slider.oninput = () => {
-    valueDisplay.textContent = parseFloat(slider.value).toFixed(3);
+    const value = parseFloat(slider.value);
+    textInput.value = value.toFixed(3);
+    valueDisplay.textContent = value.toFixed(3);
     if (filters[datasetIndex][axis.name]) {
-      filters[datasetIndex][axis.name].value = parseFloat(slider.value);
+      filters[datasetIndex][axis.name].value = value;
       updateChart(datasetIndex);
     }
   };
   
-  control.appendChild(slider);
+  // 텍스트 입력 변경 이벤트
+  const updateFromTextInput = () => {
+    let value = parseFloat(textInput.value);
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    
+    // 범위 검증
+    if (isNaN(value)) {
+      value = parseFloat(slider.value); // 현재 슬라이더 값으로 복원
+    } else if (value < min) {
+      value = min;
+    } else if (value > max) {
+      value = max;
+    }
+    
+    // 값 동기화
+    textInput.value = value.toFixed(3);
+    slider.value = value;
+    valueDisplay.textContent = value.toFixed(3);
+    
+    if (filters[datasetIndex][axis.name]) {
+      filters[datasetIndex][axis.name].value = value;
+      updateChart(datasetIndex);
+    }
+  };
+  
+  textInput.onchange = updateFromTextInput;
+  textInput.onblur = updateFromTextInput;
+  
+  // Enter 키 처리
+  textInput.onkeypress = (e) => {
+    if (e.key === 'Enter') {
+      updateFromTextInput();
+      textInput.blur(); // 포커스 해제
+    }
+  };
+  
+  // 슬라이더 컨테이너에 요소들 추가
+  sliderContainer.appendChild(slider);
+  sliderContainer.appendChild(textInput);
+  
+  control.appendChild(sliderContainer);
   control.appendChild(valueDisplay);
   
   return control;
