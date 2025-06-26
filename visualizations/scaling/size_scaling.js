@@ -135,7 +135,7 @@ export function createScalingSection(dataset, datasetIndex, onApplyScaling) {
   
   const section = document.createElement('div');
   section.className = 'scaling-section';
-  section.style.marginTop = '15px';
+  section.style.marginTop = '5px';
   
   // Collapsible header
   const header = document.createElement('div');
@@ -147,7 +147,7 @@ export function createScalingSection(dataset, datasetIndex, onApplyScaling) {
     padding: 8px;
     background: #f0f0f0;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     user-select: none;
   `;
   

@@ -39,7 +39,7 @@ export function createAxisWindowControl(axis, datasetIndex) {
   const control = document.createElement('div');
   control.className = 'axis-window-control';
   control.style.cssText = `
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;

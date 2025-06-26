@@ -1,2 +1,2 @@
-export { loadData, displaySelectedData } from './DataLoader.js';
+export { loadData } from './DataLoader.js';
 export { prepareData, getFilteredDataWithWindow } from './DataProcessor.js';

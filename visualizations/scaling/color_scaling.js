@@ -80,7 +80,7 @@ export function createColorScalingSection(dataset, datasetIndex, onApplyColorSca
   
   const section = document.createElement('div');
   section.className = 'color-scaling-section';
-  section.style.marginTop = '15px';
+  section.style.marginTop = '5px';
   
   // Collapsible header
   const header = document.createElement('div');
@@ -92,7 +92,7 @@ export function createColorScalingSection(dataset, datasetIndex, onApplyColorSca
     padding: 8px;
     background: #f0f0f0;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     user-select: none;
   `;
   

@@ -5,28 +5,7 @@ import { setSelectedDimensionData, setOriginalData, generateAndDisplayDatasets, 
 // Loads and parses data from session storage
 // Shows information about selected dimensions
 
-export function loadData() {
-  // 선택된 차원 데이터 로드
-  const selectedDataRaw = sessionStorage.getItem('selectedDimensionData');
-  const originalDataRaw = sessionStorage.getItem('generatedData');
-  
-  if (!selectedDataRaw) {
-    showError('선택된 차원 데이터가 없습니다. 먼저 차원을 선택해주세요.');
-    return;
-  }
-  
-  try {
-    setSelectedDimensionData(JSON.parse(selectedDataRaw));
-    setOriginalData(originalDataRaw ? JSON.parse(originalDataRaw) : null);
-    
-    displaySelectedData();
-    generateAndDisplayDatasets();
-  } catch (error) {
-    showError('데이터 파싱 오류: ' + error.message);
-  }
-}
-
-export function displaySelectedData() {
+ function displaySelectedData() {
   const selectedDataInfo = document.getElementById('selectedDataInfo');
   const data = selectedDimensionData;
   
@@ -42,3 +21,26 @@ export function displaySelectedData() {
     </div>
   `;
 }
+
+export function loadData() {
+  // 선택된 차원 데이터 로드
+  const selectedDataRaw = sessionStorage.getItem('selectedDimensionData');
+  const originalDataRaw = sessionStorage.getItem('generatedData');
+  
+  if (!selectedDataRaw) {
+    showError('선택된 차원 데이터가 없습니다. 먼저 차원을 선택해주세요.');
+    return;
+  }
+  
+  try {
+    //selectedDimensionData = JSON.parse(selectedDataRaw);
+    setSelectedDimensionData(JSON.parse(selectedDataRaw));
+    setOriginalData(originalDataRaw ? JSON.parse(originalDataRaw) : null);
+    
+    displaySelectedData();
+    generateAndDisplayDatasets();
+  } catch (error) {
+    showError('데이터 파싱 오류: ' + error.message);
+  }
+}
+
